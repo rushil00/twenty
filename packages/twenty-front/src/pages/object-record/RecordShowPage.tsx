@@ -8,6 +8,9 @@ import { useLabelIdentifierFieldMetadataItem } from '@/object-metadata/hooks/use
 import { useObjectMetadataItem } from '@/object-metadata/hooks/useObjectMetadataItem';
 import { useFindOneRecord } from '@/object-record/hooks/useFindOneRecord';
 import { RecordShowContainer } from '@/object-record/record-show/components/RecordShowContainer';
+import { findOneRecordForShowPageOperationSignatureFactory } from '@/object-record/record-show/graphql/operations/factories/findOneRecordForShowPageOperationSignatureFactory';
+import { RecordValueSetterEffect } from '@/object-record/record-store/components/RecordValueSetterEffect';
+import { RecordFieldValueSelectorContextProvider } from '@/object-record/record-store/contexts/RecordFieldValueSelectorContext';
 import { recordStoreFamilyState } from '@/object-record/record-store/states/recordStoreFamilyState';
 import { PageBody } from '@/ui/layout/page/PageBody';
 import { PageContainer } from '@/ui/layout/page/PageContainer';
@@ -53,13 +56,20 @@ export const RecordShowPage = () => {
 
   const headerIcon = getIcon(objectMetadataItem?.icon);
 
+  const FIND_ONE_RECORD_FOR_SHOW_PAGE_OPERATION_SIGNATURE =
+    findOneRecordForShowPageOperationSignatureFactory({ objectMetadataItem });
+
   const { record, loading } = useFindOneRecord({
     objectRecordId,
     objectNameSingular,
+    recordGqlFields: FIND_ONE_RECORD_FOR_SHOW_PAGE_OPERATION_SIGNATURE.fields,
   });
 
   useEffect(() => {
-    if (!record) return;
+    if (!record) {
+      return;
+    }
+
     setEntityFields(record);
   }, [record, setEntityFields]);
 
@@ -96,21 +106,17 @@ export const RecordShowPage = () => {
     ? `${pageName} - ${capitalize(objectNameSingular)}`
     : capitalize(objectNameSingular);
 
-  // Temporarily since we don't have relations for remote objects yet
-  if (objectMetadataItem.isRemote) {
-    return null;
-  }
-
   return (
-    <PageContainer>
-      <PageTitle title={pageTitle} />
-      <PageHeader
-        title={pageName ?? ''}
-        hasBackButton
-        Icon={headerIcon}
-        loading={loading}
-      >
-        {record && (
+    <RecordFieldValueSelectorContextProvider>
+      <RecordValueSetterEffect recordId={objectRecordId} />
+      <PageContainer>
+        <PageTitle title={pageTitle} />
+        <PageHeader
+          title={pageName ?? ''}
+          hasBackButton
+          Icon={headerIcon}
+          loading={loading}
+        >
           <>
             <PageFavoriteButton
               isFavorite={isFavorite}
@@ -119,24 +125,25 @@ export const RecordShowPage = () => {
             <ShowPageAddButton
               key="add"
               activityTargetObject={{
-                id: record.id,
+                id: record?.id ?? '0',
                 targetObjectNameSingular: objectMetadataItem?.nameSingular,
               }}
             />
             <ShowPageMoreButton
               key="more"
-              recordId={record.id}
+              recordId={record?.id ?? '0'}
               objectNameSingular={objectNameSingular}
             />
           </>
-        )}
-      </PageHeader>
-      <PageBody>
-        <RecordShowContainer
-          objectNameSingular={objectNameSingular}
-          objectRecordId={objectRecordId}
-        />
-      </PageBody>
-    </PageContainer>
+        </PageHeader>
+        <PageBody>
+          <RecordShowContainer
+            objectNameSingular={objectNameSingular}
+            objectRecordId={objectRecordId}
+            loading={loading}
+          />
+        </PageBody>
+      </PageContainer>
+    </RecordFieldValueSelectorContextProvider>
   );
 };

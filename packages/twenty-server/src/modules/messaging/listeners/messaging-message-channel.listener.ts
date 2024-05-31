@@ -9,7 +9,7 @@ import {
   MessagingCreateCompanyAndContactAfterSyncJobData,
   MessagingCreateCompanyAndContactAfterSyncJob,
 } from 'src/modules/messaging/jobs/messaging-create-company-and-contact-after-sync.job';
-import { MessageChannelObjectMetadata } from 'src/modules/messaging/standard-objects/message-channel.object-metadata';
+import { MessageChannelWorkspaceEntity } from 'src/modules/messaging/standard-objects/message-channel.workspace-entity';
 
 @Injectable()
 export class MessagingMessageChannelListener {
@@ -20,14 +20,14 @@ export class MessagingMessageChannelListener {
 
   @OnEvent('messageChannel.updated')
   async handleUpdatedEvent(
-    payload: ObjectRecordUpdateEvent<MessageChannelObjectMetadata>,
+    payload: ObjectRecordUpdateEvent<MessageChannelWorkspaceEntity>,
   ) {
     if (
       objectRecordChangedProperties(
-        payload.details.before,
-        payload.details.after,
+        payload.properties.before,
+        payload.properties.after,
       ).includes('isContactAutoCreationEnabled') &&
-      payload.details.after.isContactAutoCreationEnabled
+      payload.properties.after.isContactAutoCreationEnabled
     ) {
       await this.messageQueueService.add<MessagingCreateCompanyAndContactAfterSyncJobData>(
         MessagingCreateCompanyAndContactAfterSyncJob.name,

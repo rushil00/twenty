@@ -33,6 +33,14 @@ export class TypeORMService implements OnModuleInit, OnModuleDestroy {
         BillingSubscription,
         BillingSubscriptionItem,
       ],
+      ssl: environmentService.get('PG_SSL_ALLOW_SELF_SIGNED')
+        ? {
+            rejectUnauthorized: false,
+          }
+        : undefined,
+      extra: {
+        query_timeout: 10000,
+      },
     });
   }
 
@@ -84,6 +92,11 @@ export class TypeORMService implements OnModuleInit, OnModuleDestroy {
         ? ['query', 'error']
         : ['error'],
       schema,
+      ssl: this.environmentService.get('PG_SSL_ALLOW_SELF_SIGNED')
+        ? {
+            rejectUnauthorized: false,
+          }
+        : undefined,
     });
 
     await workspaceDataSource.initialize();

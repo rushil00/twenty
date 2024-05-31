@@ -1,9 +1,10 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import styled from '@emotion/styled';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRecoilState } from 'recoil';
 import { Key } from 'ts-key-enum';
+import { H2Title } from 'twenty-ui';
 import { z } from 'zod';
 
 import { SubTitle } from '@/auth/components/SubTitle';
@@ -15,10 +16,10 @@ import { CoreObjectNameSingular } from '@/object-metadata/types/CoreObjectNameSi
 import { useUpdateOneRecord } from '@/object-record/hooks/useUpdateOneRecord';
 import { ProfilePictureUploader } from '@/settings/profile/components/ProfilePictureUploader';
 import { PageHotkeyScope } from '@/types/PageHotkeyScope';
-import { H2Title } from '@/ui/display/typography/components/H2Title';
+import { SnackBarVariant } from '@/ui/feedback/snack-bar-manager/components/SnackBar';
 import { useSnackBar } from '@/ui/feedback/snack-bar-manager/hooks/useSnackBar';
 import { MainButton } from '@/ui/input/button/components/MainButton';
-import { TextInput } from '@/ui/input/components/TextInput';
+import { TextInputV2 } from '@/ui/input/components/TextInputV2';
 import { useScopedHotkeys } from '@/ui/utilities/hotkey/hooks/useScopedHotkeys';
 import { WorkspaceMember } from '@/workspace-member/types/WorkspaceMember';
 
@@ -114,7 +115,7 @@ export const CreateProfile = () => {
         );
       } catch (error: any) {
         enqueueSnackBar(error?.message, {
-          variant: 'error',
+          variant: SnackBarVariant.Error,
         });
       }
     },
@@ -126,13 +127,16 @@ export const CreateProfile = () => {
     ],
   );
 
+  const [isEditingMode, setIsEditingMode] = useState(false);
+
   useScopedHotkeys(
     Key.Enter,
     () => {
-      onSubmit(getValues());
+      if (isEditingMode) {
+        onSubmit(getValues());
+      }
     },
     PageHotkeyScope.CreateProfile,
-    [onSubmit],
   );
 
   if (onboardingStatus !== OnboardingStatus.OngoingProfileCreation) {
@@ -162,16 +166,19 @@ export const CreateProfile = () => {
                 field: { onChange, onBlur, value },
                 fieldState: { error },
               }) => (
-                <TextInput
+                <TextInputV2
                   autoFocus
                   label="First Name"
                   value={value}
-                  onBlur={onBlur}
+                  onFocus={() => setIsEditingMode(true)}
+                  onBlur={() => {
+                    onBlur();
+                    setIsEditingMode(false);
+                  }}
                   onChange={onChange}
                   placeholder="Tim"
                   error={error?.message}
                   fullWidth
-                  disableHotkeys
                 />
               )}
             />
@@ -182,15 +189,18 @@ export const CreateProfile = () => {
                 field: { onChange, onBlur, value },
                 fieldState: { error },
               }) => (
-                <TextInput
+                <TextInputV2
                   label="Last Name"
                   value={value}
-                  onBlur={onBlur}
+                  onFocus={() => setIsEditingMode(true)}
+                  onBlur={() => {
+                    onBlur();
+                    setIsEditingMode(false);
+                  }}
                   onChange={onChange}
                   placeholder="Cook"
                   error={error?.message}
                   fullWidth
-                  disableHotkeys
                 />
               )}
             />

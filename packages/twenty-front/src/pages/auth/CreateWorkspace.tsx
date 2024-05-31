@@ -5,6 +5,7 @@ import styled from '@emotion/styled';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useSetRecoilState } from 'recoil';
 import { Key } from 'ts-key-enum';
+import { H2Title } from 'twenty-ui';
 import { z } from 'zod';
 
 import { SubTitle } from '@/auth/components/SubTitle';
@@ -16,11 +17,11 @@ import { FIND_MANY_OBJECT_METADATA_ITEMS } from '@/object-metadata/graphql/queri
 import { useApolloMetadataClient } from '@/object-metadata/hooks/useApolloMetadataClient';
 import { WorkspaceLogoUploader } from '@/settings/workspace/components/WorkspaceLogoUploader';
 import { AppPath } from '@/types/AppPath';
-import { H2Title } from '@/ui/display/typography/components/H2Title';
-import { Loader } from '@/ui/feedback/loader/components/Loader.tsx';
+import { Loader } from '@/ui/feedback/loader/components/Loader';
+import { SnackBarVariant } from '@/ui/feedback/snack-bar-manager/components/SnackBar';
 import { useSnackBar } from '@/ui/feedback/snack-bar-manager/hooks/useSnackBar';
 import { MainButton } from '@/ui/input/button/components/MainButton';
-import { TextInput } from '@/ui/input/components/TextInput';
+import { TextInputV2 } from '@/ui/input/components/TextInputV2';
 import { useActivateWorkspaceMutation } from '~/generated/graphql';
 import { isDefined } from '~/utils/isDefined';
 
@@ -93,7 +94,7 @@ export const CreateWorkspace = () => {
         }, 20);
       } catch (error: any) {
         enqueueSnackBar(error?.message, {
-          variant: 'error',
+          variant: SnackBarVariant.Error,
         });
       }
     },
@@ -141,7 +142,7 @@ export const CreateWorkspace = () => {
               field: { onChange, onBlur, value },
               fieldState: { error },
             }) => (
-              <TextInput
+              <TextInputV2
                 autoFocus
                 value={value}
                 placeholder="Apple"
@@ -150,7 +151,6 @@ export const CreateWorkspace = () => {
                 error={error?.message}
                 onKeyDown={handleKeyDown}
                 fullWidth
-                disableHotkeys
               />
             )}
           />

@@ -4,7 +4,8 @@ import styled from '@emotion/styled';
 import { useRecoilValue } from 'recoil';
 
 import { getBasePathToShowPage } from '@/object-metadata/utils/getBasePathToShowPage';
-import { RecordTableCellContainer } from '@/object-record/record-table/components/RecordTableCellContainer';
+import { RecordValueSetterEffect } from '@/object-record/record-store/components/RecordValueSetterEffect';
+import { RecordTableCellFieldContextWrapper } from '@/object-record/record-table/components/RecordTableCellFieldContextWrapper';
 import { RecordTableCellContext } from '@/object-record/record-table/contexts/RecordTableCellContext';
 import { RecordTableContext } from '@/object-record/record-table/contexts/RecordTableContext';
 import { RecordTableRowContext } from '@/object-record/record-table/contexts/RecordTableRowContext';
@@ -16,13 +17,18 @@ import { CheckboxCell } from './CheckboxCell';
 type RecordTableRowProps = {
   recordId: string;
   rowIndex: number;
+  isPendingRow?: boolean;
 };
 
 const StyledTd = styled.td`
   background-color: ${({ theme }) => theme.background.primary};
 `;
 
-export const RecordTableRow = ({ recordId, rowIndex }: RecordTableRowProps) => {
+export const RecordTableRow = ({
+  recordId,
+  rowIndex,
+  isPendingRow,
+}: RecordTableRowProps) => {
   const { visibleTableColumnsSelector, isRowSelectedFamilyState } =
     useRecordTableStates();
   const currentRowSelected = useRecoilValue(isRowSelectedFamilyState(recordId));
@@ -33,7 +39,9 @@ export const RecordTableRow = ({ recordId, rowIndex }: RecordTableRowProps) => {
   const scrollWrapperRef = useContext(ScrollWrapperContext);
 
   const { ref: elementRef, inView } = useInView({
-    root: scrollWrapperRef.current,
+    root: scrollWrapperRef.current?.querySelector(
+      '[data-overlayscrollbars-viewport="scrollbarHidden"]',
+    ),
     rootMargin: '1000px',
   });
 
@@ -48,8 +56,10 @@ export const RecordTableRow = ({ recordId, rowIndex }: RecordTableRowProps) => {
           }) + recordId,
         isSelected: currentRowSelected,
         isReadOnly: objectMetadataItem.isRemote ?? false,
+        isPendingRow,
       }}
     >
+      <RecordValueSetterEffect recordId={recordId} />
       <tr
         ref={elementRef}
         data-testid={`row-id-${recordId}`}
@@ -58,21 +68,21 @@ export const RecordTableRow = ({ recordId, rowIndex }: RecordTableRowProps) => {
         <StyledTd>
           <CheckboxCell />
         </StyledTd>
-        {visibleTableColumns.map((column, columnIndex) =>
-          inView ? (
-            <RecordTableCellContext.Provider
-              value={{
-                columnDefinition: column,
-                columnIndex,
-              }}
-              key={column.fieldMetadataId}
-            >
-              <RecordTableCellContainer />
-            </RecordTableCellContext.Provider>
-          ) : (
-            <td key={column.fieldMetadataId}></td>
-          ),
-        )}
+        {inView
+          ? visibleTableColumns.map((column, columnIndex) => (
+              <RecordTableCellContext.Provider
+                value={{
+                  columnDefinition: column,
+                  columnIndex,
+                }}
+                key={column.fieldMetadataId}
+              >
+                <RecordTableCellFieldContextWrapper />
+              </RecordTableCellContext.Provider>
+            ))
+          : visibleTableColumns.map((column) => (
+              <td key={column.fieldMetadataId}></td>
+            ))}
         <td></td>
       </tr>
     </RecordTableRowContext.Provider>
