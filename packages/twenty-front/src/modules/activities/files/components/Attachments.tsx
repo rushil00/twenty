@@ -48,6 +48,9 @@ export const Attachments = ({
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (isDefined(e.target.files)) onUploadFile?.(e.target.files[0]);
+
+    // console.log(e);
+    // console.log(e?.target?.files?.[0]);
   };
 
   const handleUploadFileClick = () => {

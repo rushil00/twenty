@@ -29,6 +29,8 @@ import { AutoCompaniesAndContactsCreationJobModule } from 'src/modules/connected
 import { MessagingCronJobModule } from 'src/modules/messaging/crons/jobs/messaging-cron-job.module';
 import { MessagingJobModule } from 'src/modules/messaging/jobs/messaging-job.module';
 import { TimelineJobModule } from 'src/modules/timeline/jobs/timeline-job.module';
+import { GPTAPIModule } from 'src/modules/gpt-requests/gpt-requests.module';
+import { CVProcessingJobMQ } from 'src/modules/gpt-requests/consumers/gpt-requests-partial.job';
 
 @Module({
   imports: [
@@ -56,6 +58,7 @@ import { TimelineJobModule } from 'src/modules/timeline/jobs/timeline-job.module
     MessagingCronJobModule,
     MessagingJobModule,
     TimelineJobModule,
+    GPTAPIModule,
   ],
   providers: [
     {
@@ -71,6 +74,10 @@ import { TimelineJobModule } from 'src/modules/timeline/jobs/timeline-job.module
     {
       provide: HandleWorkspaceMemberDeletedJob.name,
       useClass: HandleWorkspaceMemberDeletedJob,
+    },
+    {
+      provide: CVProcessingJobMQ.name,
+      useClass: CVProcessingJobMQ,
     },
   ],
 })

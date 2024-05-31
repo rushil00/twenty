@@ -5,6 +5,8 @@ import { useRecoilValue } from 'recoil';
 import { actionBarEntriesState } from '@/ui/navigation/action-bar/states/actionBarEntriesState';
 import { contextMenuIsOpenState } from '@/ui/navigation/context-menu/states/contextMenuIsOpenState';
 
+import { contextMenuItemIndexState } from '../../context-menu/states/contextMenuItemIndexState';
+
 import { ActionBarItem } from './ActionBarItem';
 
 type ActionBarProps = {
@@ -43,6 +45,7 @@ export const ActionBar = ({ selectedIds }: ActionBarProps) => {
   const contextMenuIsOpen = useRecoilValue(contextMenuIsOpenState);
   const actionBarEntries = useRecoilValue(actionBarEntriesState);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const contextMenuItemIndex = useRecoilValue(contextMenuItemIndexState);
 
   if (contextMenuIsOpen) {
     return null;
@@ -63,7 +66,8 @@ export const ActionBar = ({ selectedIds }: ActionBarProps) => {
         ))}
       </StyledContainerActionBar>
       <div data-select-disable className="action-bar">
-        {actionBarEntries[0]?.ConfirmationModal}
+        {actionBarEntries[contextMenuItemIndex]?.ConfirmationModal}
+        {/* {actionBarEntries[0]?.ConfirmationModal} */}
       </div>
     </>
   );
