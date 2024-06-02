@@ -28,9 +28,10 @@ export class CVProcessingJobMQ
 
   async handle(arg: CVProcessingJobMQData2): Promise<any> {
     const prompt = arg.data.prompt; //structured!
+    // console.log(prompt);
     const recordData = await this.getRequiredRecordData(arg.data.record.node);
     const { path, fileName } = this.getPath(arg.data.record.node);
-
+    console.log("prompt.job",prompt)
     /*const config = {
       responseType: 'arraybuffer', // To get the PDF content as an ArrayBuffer
       headers: {
@@ -67,9 +68,9 @@ export class CVProcessingJobMQ
         prompts: prompt,
         record: recordData,
       });
-
+    console.log("scoredData.Job", scoredData)
     await Promise.all(
-      scoredData.response.map((data) => {
+      scoredData.map((data) => {
         createRecord({
           query: CREATE_ONE_PROMPT_ANSWER,
           data: {

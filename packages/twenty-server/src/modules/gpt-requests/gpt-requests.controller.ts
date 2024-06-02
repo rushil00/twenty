@@ -32,7 +32,7 @@ export class GPTAPIController {
   @Post('process-cv')
   async getCVProcess(@Req() req): Promise<any> {
     const cvProcessingService = new CVProcessing(
-      '/home/rushiil/Downloads/manufacturing-cvs/VIshal Sharma -Curriculum Vitae -2.pdf',
+      '/home/rushiil/Downloads/manufacturing-cvs/CHANDRA BHAN SINGH - Arxen Inc.docx',
     );
 
     // return;
@@ -44,16 +44,6 @@ export class GPTAPIController {
 
   @Post('process-cv-mq')
   async getCVProcessMQ(@Req() request): Promise<void> {
-    // const cvProcessingService = new CVProcessing(
-    //   '/home/rushiil/Downloads/manufacturing-cvs/VIshal Sharma -Curriculum Vitae -2.pdf',
-    // );
-    // await this.cvProcessingEnqueue.addToMyQueue();
-    // await this.messageQueueService.add<CVProcessingJobMQData>(
-    //   CVProcessingJobMQ.name, // This is the job token/name
-    //   {
-    //     data: { question: questions },
-    //   }, // This is a MyAwesomeJobData payload
-    // );
     await this.gptAPIService.customPromptEnrichment(
       request.body.data.records,
       request.body.data.customPrompt,

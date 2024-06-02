@@ -1,4 +1,5 @@
-/* eslint-disable @nx/workspace-matching-state-variable */
+/* eslint-disable unused-imports/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @nx/workspace-no-state-useref */
 import React, {
   forwardRef,
@@ -63,18 +64,19 @@ export const ProgressBar = forwardRef<ProgressBarControls, ProgressBarProps>(
     const controls = useAnimation();
     const startTimestamp = useRef<number>(0);
     const remainingTime = useRef<number>(duration);
-    const [recordNum, setRecordNum] = useRecoilState(NumberOfRecordsState);
+    const [NumberOfRecords, setNumberOfRecords] =
+      useRecoilState(NumberOfRecordsState);
     const start = useCallback(async () => {
       startTimestamp.current = Date.now();
       return controls.start({
-        scaleX: recordNum, // Use fraction completed as scaleX value
+        scaleX: NumberOfRecords, // Use fraction completed as scaleX value
         transition: {
           duration: remainingTime.current / 1000,
           delay: delay / 1000,
           ease: easing,
         },
       });
-    }, [controls, delay, easing, recordNum]);
+    }, [controls, delay, easing, NumberOfRecords]);
 
     useImperativeHandle(ref, () => ({
       ...controls,

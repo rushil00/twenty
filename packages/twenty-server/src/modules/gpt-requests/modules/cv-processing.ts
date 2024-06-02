@@ -309,7 +309,7 @@ export class CVProcessing {
   
       return output;
     }*/
-
+  // TODO: correct this function
   async askStructuredQuestionsFromCV(promptStructured: any[]) {
     const output = await this.createEmbeddings().then(async () => {
       // ====================================================================
@@ -332,7 +332,7 @@ export class CVProcessing {
       const answerSchema = z.object(
         Object.fromEntries(
           promptStructured.map((prompt) => [
-            prompt.key,
+            prompt.name,
             z.object({
               question: z.string().describe('asked question'),
               response: z.string().describe('one line answer from CV'),
@@ -360,6 +360,7 @@ export class CVProcessing {
 
       // console.log(responseAns);
       // -------------------------------------------------------------
+      console.log(responseAns);
 
       const scoringData: {
         key: any;
@@ -368,19 +369,18 @@ export class CVProcessing {
         candidateAnswer: any;
       }[] = [];
 
-      // console.log(promptStructured);
+      console.log("promptStructured.CVProcess",promptStructured);
       for (const res of promptStructured) {
         const tempVariable = {
           key: res.name,
-          question: responseAns[res.key].question,
+          question: res.question,
           expectedAnswer: res?.expectedAnswer || '',
-          candidateAnswer: responseAns[res.key].response,
+          candidateAnswer: responseAns[res.name].response,
         };
 
         // console.log(tempVariable)
         scoringData.push(tempVariable);
       }
-
       return { responseAns: responseAns, scoringData: scoringData };
     });
 
@@ -446,7 +446,7 @@ export class CVProcessing {
 
       // console.log('responseScore', responseScore);
       // console.log((performance.now()-start)/1000)
-
+      // console.log(responseScore);
       const outputResponse: {
         key: any;
         question: any;
@@ -468,7 +468,7 @@ export class CVProcessing {
 
       // console.log(outputResponse)
       // return outputResponse;
-      return responseScore;
+      return responseScore.response;
     };
 
     return await output();
@@ -713,10 +713,11 @@ export class CVProcessing {
 
   async getScoresFromCustomPrompt({ prompts, record }) {
     // const response: any = await this.processPromptToStructuredData(prompts);
-    const { scoringData } = await this.askStructuredQuestionsFromCV(prompts);
-
+    const { scoringData , responseAns } = await this.askStructuredQuestionsFromCV(prompts);
+    // console.log(scoringData);
     // console.log(responseAns);
     const scoredData = await this.getScores(scoringData);
+    console.log(scoredData);
     const candidateId = record.id;
 
     /*await Promise.all(
@@ -733,6 +734,6 @@ export class CVProcessing {
         }),
       );*/
 
-    return { scoredData, candidateId };
+    return { scoredData, candidateId , responseAns };
   }
 }
