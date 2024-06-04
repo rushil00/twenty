@@ -10,11 +10,15 @@ import axios from 'axios';
 
 import { MessageQueueJob } from 'src/engine/integrations/message-queue/interfaces/message-queue-job.interface';
 
-import { CVProcessingJobMQData2 } from 'src/modules/gpt-requests/gpt-requests.service';
 import { CREATE_ONE_PROMPT_ANSWER } from 'src/modules/gpt-requests/graphql/object-records/constants/record-mutations';
 import { createRecord } from 'src/modules/gpt-requests/graphql/object-records/database-operations/create-record';
 import { CVProcessing } from 'src/modules/gpt-requests/modules/cv-processing';
 import { TWENTY_API_KEY } from 'src/modules/gpt-requests/constants/keys';
+import {
+  CVProcessingJobMQData2,
+  CandidateNode,
+  ScoredDataType,
+} from 'src/modules/gpt-requests/types/gpt-requests.service-types';
 
 const path_ = path;
 
@@ -26,12 +30,12 @@ export class CVProcessingJobMQ
 
   constructor() {}
 
-  async handle(arg: CVProcessingJobMQData2): Promise<any> {
+  async handle(arg: CVProcessingJobMQData2): Promise<void> {
     const prompt = arg.data.prompt; //structured!
     // console.log(prompt);
     const recordData = await this.getRequiredRecordData(arg.data.record.node);
     const { path, fileName } = this.getPath(arg.data.record.node);
-    console.log("prompt.job",prompt)
+    // console.log("prompt.job",prompt)
     /*const config = {
       responseType: 'arraybuffer', // To get the PDF content as an ArrayBuffer
       headers: {
@@ -68,9 +72,10 @@ export class CVProcessingJobMQ
         prompts: prompt,
         record: recordData,
       });
-    console.log("scoredData.Job", scoredData)
+
+    console.log('scoredData.Job', scoredData);
     await Promise.all(
-      scoredData.map((data) => {
+      scoredData.map((data: ScoredDataType) => {
         createRecord({
           query: CREATE_ONE_PROMPT_ANSWER,
           data: {
@@ -87,11 +92,11 @@ export class CVProcessingJobMQ
     return;
   }
 
-  getRequiredRecordData(record): object {
+  getRequiredRecordData(record: CandidateNode): object {
     return record;
   }
 
-  getPath(record): { fileName: string; path: string } {
+  getPath(record: CandidateNode): { fileName: string; path: string } {
     const url = 'http://localhost:3000/files/';
 
     console.log(record.people.attachments);

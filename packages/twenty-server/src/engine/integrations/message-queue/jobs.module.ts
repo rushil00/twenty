@@ -31,6 +31,7 @@ import { MessagingJobModule } from 'src/modules/messaging/jobs/messaging-job.mod
 import { TimelineJobModule } from 'src/modules/timeline/jobs/timeline-job.module';
 import { GPTAPIModule } from 'src/modules/gpt-requests/gpt-requests.module';
 import { CVProcessingJobMQ } from 'src/modules/gpt-requests/consumers/gpt-requests-partial.job';
+import { ResumeToRecordCreationHandler } from 'src/modules/gpt-requests/services/resume-processing.service';
 
 @Module({
   imports: [
@@ -78,6 +79,10 @@ import { CVProcessingJobMQ } from 'src/modules/gpt-requests/consumers/gpt-reques
     {
       provide: CVProcessingJobMQ.name,
       useClass: CVProcessingJobMQ,
+    },
+    {
+      provide: ResumeToRecordCreationHandler.name,
+      useClass: ResumeToRecordCreationHandler,
     },
   ],
 })

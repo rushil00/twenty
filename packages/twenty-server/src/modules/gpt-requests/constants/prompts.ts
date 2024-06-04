@@ -4,7 +4,11 @@ export const QNA_TO_CATEGORY_PROMPT =
 export const CV_QUESTION_PROMPT_1 =
   'Carefully analyse the CV data and answer the given questions in proper sentences.';
 
-export const SCORING_PROMPT_1 = 'Carefully analyse the CV data and answer the given questions in succint statement(s) from the CV.'
+export const SCORING_PROMPT_1 =
+  'Carefully analyse the CV data and answer the given questions in succint statement(s) from the CV.';
 
 export const SCORING_PROMPT_2 =
   'Score the givenAns response between 0 to 10 on basis of the idealAns expected, for each property from the scoring data for all the questions. Give each property only once.';
+
+export const RESUME_EXTRACTION_PROMPT =
+  "hi give me a structured parsed version of the input resume. The jobTitle should be the latest jobTitle. Summarize this a JSON with exactly the following structure {name {firstName, lastName}, email, phone, city, jobTitle}. For the city, give their latest work location if you cannot find any otherwise specified location. If you don't get a response just make that field as an empty string";

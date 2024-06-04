@@ -1,22 +1,4 @@
 import { z } from 'zod';
-
-export type enrichmentArgTypes = {
-  selectedRecords: selectedRecordDataToSendType[];
-  options: string[] | undefined;
-  question: string | undefined;
-  fieldName: string;
-};
-
-export type selectedRecordDataToSendType = {
-  id: string;
-  name: {
-    firstName: string;
-    lastName: string;
-  };
-  company?: string;
-  attachment?: any;
-};
-
 export const MENU_OPTIONS_EXEC = [
   {
     name: 'Gender',

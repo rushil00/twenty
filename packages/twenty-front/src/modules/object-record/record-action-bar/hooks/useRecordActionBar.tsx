@@ -16,7 +16,6 @@ import { useFavorites } from '@/favorites/hooks/useFavorites';
 import { ObjectMetadataItem } from '@/object-metadata/types/ObjectMetadataItem';
 import { useDeleteManyRecords } from '@/object-record/hooks/useDeleteManyRecords';
 import { useExecuteQuickActionOnOneRecord } from '@/object-record/hooks/useExecuteQuickActionOnOneRecord';
-import { useFindManyRecords } from '@/object-record/hooks/useFindManyRecords';
 import { useExportTableData } from '@/object-record/record-index/options/hooks/useExportTableData';
 import { recordStoreFamilyState } from '@/object-record/record-store/states/recordStoreFamilyState';
 import { SelectionMenu } from '@/selection-menu-new/components/SelectionMenu';
@@ -126,13 +125,6 @@ export const useRecordActionBar = ({
   const setContextMenuItemIndexState = useSetRecoilState(
     contextMenuItemIndexState,
   );
-  const selectedIdsFilter = { id: { in: selectedRecordIds } };
-  const objectNameSingular = 'candidate';
-  const { records: selectedRecords } = useFindManyRecords({
-    objectNameSingular,
-    filter: selectedIdsFilter,
-    skip: !selectedRecordIds.length,
-  });
   // console.log(selectedRecords);
   const selectionActions_: ContextMenuEntry[] = useMemo(
     () => [
@@ -145,10 +137,12 @@ export const useRecordActionBar = ({
           setContextMenuItemIndexState(2);
           openSelectionMenu();
         },
-        ConfirmationModal: <SelectionMenu selectedRecords={selectedRecords} />,
+        ConfirmationModal: (
+          <SelectionMenu selectedRecordIds={selectedRecordIds} />
+        ),
       },
     ],
-    [selectedRecords, setContextMenuItemIndexState, openSelectionMenu],
+    [selectedRecordIds, setContextMenuItemIndexState, openSelectionMenu],
   );
   // console.log(isSelectionModalOpen);
   const baseActions: ContextMenuEntry[] = useMemo(

@@ -5,9 +5,9 @@ import { MessageQueueService } from 'src/engine/integrations/message-queue/servi
 import { CVProcessingJobMQ } from 'src/modules/gpt-requests/consumers/gpt-requests-partial.job';
 import {
   CVProcessingJobMQData,
-  //   CVProcessingJobMQ,
   CVProcessingJobMQData2,
-} from 'src/modules/gpt-requests/gpt-requests.service';
+  CandidatesEdge,
+} from 'src/modules/gpt-requests/types/gpt-requests.service-types';
 
 @Injectable({})
 export class CVProcessingEnqueue {
@@ -28,7 +28,7 @@ export class CVProcessingEnqueue {
     );
   }
 
-  async addToMyQueueStructured(record, promptStructured) {
+  async addToMyQueueStructured(record: CandidatesEdge, promptStructured) {
     await this.messageQueueService.add<CVProcessingJobMQData2>(
       CVProcessingJobMQ.name,
       {

@@ -70,11 +70,10 @@ export const findManyCandidates = async (recordID: string[]) => {
     },
     {
       headers: {
-        Authorization:
-          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMDIwMjAyMC0xYzI1LTRkMDItYmYyNS02YWVjY2Y3ZWE0MTkiLCJpYXQiOjE3MTY2NDEwNzIsImV4cCI6NDg3MDI0MTA3MSwianRpIjoiNjc4YTMyZTItOTkyZi00Y2MwLWI3NzEtMTAxMTMzYjk1OWU0In0.pN-tV6K06c0-owjI8byTsLnQhLHTbHooRLXgjDv7Wz4',
+        Authorization: `Bearer ${process.env.TWENTY_API_KEY}`,
       },
     },
   );
-  console.log(response.data.data.candidates.edges);
+  // console.log(response.data);
   return response.data.data.candidates.edges;
 };

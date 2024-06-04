@@ -13,4 +13,5 @@ export enum MessageQueue {
   recordPositionBackfillQueue = 'record-position-backfill-queue',
   entityEventsToDbQueue = 'entity-events-to-db-queue',
   cvProcessesToDbQueue = 'cv-processes-to-db-queue',
+  recordsFromResumeQueue = 'records-from-resume-queue',
 }

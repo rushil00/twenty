@@ -14,10 +14,10 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 // import { useOpenActivityRightDrawer } from '@/activities/hooks/useOpenActivityRightDrawer';
 // import { commandMenuSearchState } from '@/command-menu/states/commandMenuSearchState';
 import { useCreateOneFieldMetadataItem } from '@/object-metadata/hooks/useCreateOneFieldMetadataItem';
+import { useFindManyRecords } from '@/object-record/hooks/useFindManyRecords';
 // import { useObjectMetadataItemForSettings } from '@/object-metadata/hooks/useObjectMetadataItemForSettings';
 // import { getDisabledFieldMetadataItems } from '@/object-metadata/utils/getDisabledFieldMetadataItems';
 import { useUpdateOneRecord } from '@/object-record/hooks/useUpdateOneRecord';
-import { ObjectRecord } from '@/object-record/types/ObjectRecord';
 import { findManyCandidates } from '@/selection-menu-new/hooks/useFindManyCandidates';
 import { Button } from '@/ui/input/button/components/Button';
 import { isProgressDrawerOpenState } from '@/ui/layout/progress-drawer/states/isRightDrawerOpenState';
@@ -37,7 +37,7 @@ import { SelectionListState } from '../states/selectionListState';
 import { SelectionDropDown } from './dropdownSelection/DropDown';
 
 type SelectionMenuProps = {
-  selectedRecords: ObjectRecord[];
+  selectedRecordIds: string[];
   objectNameSingular?: string;
 };
 
@@ -163,7 +163,7 @@ const StyledComboInputContainer = styled.div`
 `;
 
 export const SelectionMenu = ({
-  selectedRecords,
+  selectedRecordIds,
   objectNameSingular = 'candidate',
 }: SelectionMenuProps) => {
   /*const { findActiveObjectMetadataItemBySlug } =
@@ -182,7 +182,12 @@ export const SelectionMenu = ({
 
   // const idToUpdate = allFields?.find((field: any) => field.name === 'gender');
   // console.log(idToUpdate)
-
+  const selectedIdsFilter = { id: { in: selectedRecordIds } };
+  const { records: selectedRecords } = useFindManyRecords({
+    objectNameSingular,
+    filter: selectedIdsFilter,
+    skip: !selectedRecordIds.length,
+  });
   const { updateOneRecord } = useUpdateOneRecord({ objectNameSingular });
   const [customPromptInput, setCustomPromptInput] = useState('');
 
@@ -217,7 +222,6 @@ export const SelectionMenu = ({
     // console.log(performance.now() - startTime);
   };*/
 
-  // eslint-disable-next-line unused-imports/no-unused-vars
   const [isRightDrawerOpen, setIsRightDrawerOpen] = useRecoilState(
     isProgressDrawerOpenState,
   );

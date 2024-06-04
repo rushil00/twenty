@@ -6,8 +6,9 @@ import { FIND_MANY_PROMPT_ANSWERS_2 } from 'src/modules/gpt-requests/graphql/obj
 import { CVProcessing } from 'src/modules/gpt-requests/modules/cv-processing';
 import { CVProcessingEnqueue } from 'src/modules/gpt-requests/producers/gpt-requests-partial.command';
 import { CustomPrompt } from 'src/modules/gpt-requests/modules/custom-prompt';
+import { ResumeToRecordCreationService } from 'src/modules/gpt-requests/services/resume-processing.service';
 
-import { GPTAPIService } from './gpt-requests.service';
+import { GPTAPIService } from './services/gpt-requests.service';
 
 @Controller('gpt-api')
 export class GPTAPIController {
@@ -15,6 +16,7 @@ export class GPTAPIController {
     private gptAPIService: GPTAPIService,
     private readonly cvProcessingEnqueue: CVProcessingEnqueue,
     private readonly customPromptService: CustomPrompt,
+    private readonly resumeProcessingService: ResumeToRecordCreationService,
     // @Inject(MessageQueue.cvProcessesToDbQueue)
     // private readonly messageQueueService: MessageQueueService,
   ) {}
@@ -64,5 +66,12 @@ export class GPTAPIController {
       query: FIND_MANY_PROMPT_ANSWERS_2,
       variables: {},
     });
+  }
+
+  @Post('resume-structured')
+  async executeResumeStructuring() {
+    return await this.resumeProcessingService.mainExecutionNormal(
+      '/home/rushiil/Downloads/manufacturing-cvs',
+    );
   }
 }

@@ -12,25 +12,9 @@ import { MessageQueue } from 'src/engine/integrations/message-queue/message-queu
 import { MessageQueueService } from 'src/engine/integrations/message-queue/services/message-queue.service';
 import { CVProcessingEnqueue } from 'src/modules/gpt-requests/producers/gpt-requests-partial.command';
 import { CustomPrompt } from 'src/modules/gpt-requests/modules/custom-prompt';
+import { CandidatesEdge } from 'src/modules/gpt-requests/types/gpt-requests.service-types';
+import { MENU_OPTIONS_EXEC } from 'src/modules/gpt-requests/constants/gpt-enrichment-constants';
 
-import {
-  MENU_OPTIONS_EXEC,
-  enrichmentArgTypes,
-  // selectedRecordDataToSendType,
-} from './constants/gpt-enrichment-constants';
-
-export type CVProcessingJobMQData = {
-  data: {
-    question: string;
-    path?: string;
-  };
-};
-export type CVProcessingJobMQData2 = {
-  data: {
-    prompt: any;
-    record: any;
-  };
-};
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
 @Injectable({})
@@ -48,7 +32,7 @@ export class GPTAPIService {
 
   async gptEnrich(
     options: string[] = [],
-    selectedRecords: any[],
+    selectedRecords: CandidatesEdge[],
   ): Promise<any> {
     const optionsAndArgs = MENU_OPTIONS_EXEC.map((menuOption) => {
       if (options.includes(menuOption.id)) {
@@ -57,15 +41,15 @@ export class GPTAPIService {
     });
     const resultantRecords = selectedRecords.map((selectedRecord) => {
       return {
-        id: selectedRecord.id,
+        id: selectedRecord.node.id,
         data: {},
       };
     });
     const selectedRecordDataToSend = selectedRecords.map((selectedRecord) => {
       return {
-        id: selectedRecord.id,
-        name: selectedRecord.name,
-        company: selectedRecord.company,
+        id: selectedRecord.node.id,
+        name: selectedRecord.node.name,
+        // company: selectedRecord.person.node.company.name,
       };
     });
 
@@ -101,7 +85,7 @@ export class GPTAPIService {
     options = [],
     question,
     fieldName,
-  }: enrichmentArgTypes) {
+  }: any) {
     const model = new OpenAI({
       temperature: 0,
       apiKey: OPENAI_API_KEY,
@@ -129,7 +113,7 @@ export class GPTAPIService {
     return resultArray;
   }
 
-  async enrichData(options: string[], selectedRecords: any[]) {
+  async enrichData(options: string[], selectedRecords: CandidatesEdge[]) {
     const gptEnrichmentOptions = [
       'gender',
       'nationality',
@@ -145,15 +129,15 @@ export class GPTAPIService {
       const gptOptionsToSend = gptEnrichmentOptions && options;
       const selectedRecordDataToSend = selectedRecords.map((selectedRecord) => {
         return {
-          id: selectedRecord.id,
-          name: selectedRecord.name,
-          company: selectedRecord.company,
+          id: selectedRecord.node.id,
+          name: selectedRecord.node.name,
+          // company: selectedRecord.person.company.name,
         };
       });
 
       gptEnrichmentResult = await this.gptEnrich(
         gptOptionsToSend,
-        selectedRecordDataToSend,
+        selectedRecords,
       );
     }
 
@@ -167,48 +151,15 @@ export class GPTAPIService {
       'company_score',
       'education_score',
     ];
-    // ===================================================
-    // Async version of the above code
-    // ====================================================
-    /*if (cvProcessingOptions && options) {
-      const cvProcessingOptionsToSend = cvProcessingOptions && options;
-      const selectedRecordDataToSend = selectedRecords.map(
-        (selectedRecord) => ({
-          id: selectedRecord.id,
-          attachments: selectedRecord?.attachment ?? [], //TODO: get a getAttachment function here if possible
-        }),
-      );
-
-      const optionsAndArgs = MENU_OPTIONS_EXEC.filter((menuOption) =>
-        cvProcessingOptions.includes(menuOption.id),
-      );
-
-      const questions = optionsAndArgs.map((option) => option?.args.question);
-
-      const promises = selectedRecordDataToSend.map(async (record) => {
-        const cvProcess = new CVProcessing(record.attachments[0]?.fullPath);
-        // await this.messageQueueService.add<CVProcessingJobMQData>(
-        //   CVProcessingJobMQ.name, // This is the job token/name
-        //   {
-        //     data: {
-        //       question: questions,
-        //       path: record.attachments[0]?.fullPath,
-        //     },
-        //   }, // This is a MyAwesomeJobData payload
-        // );
-
-        return cvProcess.getAnswers(questions, cvProcessingOptionsToSend);
-      });
-
-      const responses = await Promise.all(promises);
-      const res: any[] = responses;
-    }*/
 
     return gptEnrichmentResult;
   }
 
   // TODO: TYPE DEFINITION for SELETED REORDS
-  async customPromptEnrichment(selectedRecords, rawPrompt: string) {
+  async customPromptEnrichment(
+    selectedRecords: CandidatesEdge[],
+    rawPrompt: string,
+  ) {
     const customPrompt = new CustomPrompt(
       new CVProcessingEnqueue(this.messageQueueService),
     );
