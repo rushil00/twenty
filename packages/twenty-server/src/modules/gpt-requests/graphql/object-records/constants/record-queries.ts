@@ -558,3 +558,112 @@ export const FIND_MANY_PROMPT_ANSWERS_2 = `query FindManyPromptAnswers($filter: 
     __typename
   }
 }`;
+
+export const FIND_MANY_CANDIDATES = `query FindManyCandidates($filter: CandidateFilterInput, $orderBy: CandidateOrderByInput, $lastCursor: String, $limit: Int) {
+  candidates(
+    filter: $filter
+    orderBy: $orderBy
+    first: $limit
+    after: $lastCursor
+  ) {
+    edges {
+      node {
+        __typename
+        status
+        jobsId
+        position
+        id
+        engagementStatus
+        promptAnswers {
+          edges {
+            node {
+              __typename
+              position
+              candidateId
+              updatedAt
+              candidateAnswer
+              createdAt
+              candidateAnswerScore
+              name
+              id
+            }
+            __typename
+          }
+          __typename
+        }
+        people {
+          __typename
+          phone
+                  attachments {
+          edges {
+            node {
+              __typename
+              clientInterviewId
+              questionId
+              fullPath
+              opportunityId
+              offerId
+              activityId
+              answerId
+              personId
+              type
+              recruiterInterviewId
+              candidateId
+              companyId
+              createdAt
+              promptAnswerId
+              updatedAt
+              authorId
+              id
+              whatsappMessageId
+              screeningId
+              name
+              jobId
+              promptQuestionId
+              cvsentId
+            }
+            __typename
+          }
+          __typename
+        }
+          id
+          email
+          avatarUrl
+          position
+          companyId
+          updatedAt
+          city
+          name {
+            firstName
+            lastName
+            __typename
+          }
+          xLink {
+            label
+            url
+            __typename
+          }
+          jobTitle
+          createdAt
+          linkedinLink {
+            label
+            url
+            __typename
+          }
+        }
+        peopleId
+        name
+      }
+      cursor
+      __typename
+    }
+    pageInfo {
+      hasNextPage
+      startCursor
+      endCursor
+      __typename
+    }
+    totalCount
+    __typename
+  }
+}`;

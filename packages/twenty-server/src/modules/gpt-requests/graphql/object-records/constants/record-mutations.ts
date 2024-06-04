@@ -301,3 +301,135 @@ export const CREATE_ONE_ATTACHMENT = `mutation CreateOneAttachment($input: Attac
     cvsentId
   }
 }`;
+
+export const UPDATE_ONE_CANDIDATE = `mutation UpdateOneCandidate($idToUpdate: ID!, $input: CandidateUpdateInput!) {
+  updateCandidate(id: $idToUpdate, data: $input) {
+    __typename
+    activityTargets {
+      edges {
+        node {
+          __typename
+          id
+          updatedAt
+          promptQuestionId
+          promptAnswerId
+          candidateId
+          recruiterInterviewId
+          screeningId
+          cvsentId
+          opportunityId
+          offerId
+          personId
+          answerId
+          whatsappMessageId
+          createdAt
+          questionId
+          companyId
+          clientInterviewId
+          jobId
+          activityId
+        }
+        __typename
+      }
+      __typename
+    }
+    id
+    people {
+      __typename
+      email
+      xLink {
+        label
+        url
+        __typename
+      }
+      attachments {
+      edges {
+        node {
+          __typename
+          clientInterviewId
+          createdAt
+          fullPath
+          candidateId
+          answerId
+          recruiterInterviewId
+          authorId
+          activityId
+          screeningId
+          opportunityId
+          offerId
+          questionId
+          updatedAt
+          promptQuestionId
+          companyId
+          jobId
+          personId
+          whatsappMessageId
+          promptAnswerId
+          id
+          cvsentId
+          type
+          name
+        }
+        __typename
+      }
+      __typename
+    }
+      phone
+      createdAt
+      position
+      updatedAt
+      companyId
+      name {
+        firstName
+        lastName
+        __typename
+      }
+      id
+      avatarUrl
+      jobTitle
+      linkedinLink {
+        label
+        url
+        __typename
+      }
+      city
+    }
+    jobs {
+      __typename
+      id
+      position
+      recruiterId
+      isActive
+      createdAt
+      name
+      updatedAt
+      companiesId
+      jobLocation
+    }
+    jobsId
+    createdAt
+    updatedAt
+    promptAnswers {
+      edges {
+        node {
+          __typename
+          candidateAnswerScore
+          id
+          updatedAt
+          candidateId
+          candidateAnswer
+          createdAt
+          position
+          name
+        }
+        __typename
+      }
+      __typename
+    }
+    name
+    peopleId
+    status
+    engagementStatus
+    position
+  }
+}`;

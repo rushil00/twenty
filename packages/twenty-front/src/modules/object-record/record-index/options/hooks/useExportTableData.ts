@@ -129,7 +129,7 @@ export const useExportTableData = ({
   filename,
   maximumRequests = 100,
   objectNameSingular,
-  pageSize = 30,
+  pageSize = 60,
   recordIndexId,
 }: UseExportTableDataOptions) => {
   const [isDownloading, setIsDownloading] = useState(false);

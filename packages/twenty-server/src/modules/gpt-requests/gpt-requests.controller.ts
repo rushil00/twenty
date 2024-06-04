@@ -7,6 +7,7 @@ import { CVProcessing } from 'src/modules/gpt-requests/modules/cv-processing';
 import { CVProcessingEnqueue } from 'src/modules/gpt-requests/producers/gpt-requests-partial.command';
 import { CustomPrompt } from 'src/modules/gpt-requests/modules/custom-prompt';
 import { ResumeToRecordCreationService } from 'src/modules/gpt-requests/services/resume-processing.service';
+import { updateCustomPromptCumulativeScore } from 'src/modules/gpt-requests/utils/update-custom-prompt-cumulative-score.util';
 
 import { GPTAPIService } from './services/gpt-requests.service';
 
@@ -72,6 +73,13 @@ export class GPTAPIController {
   async executeResumeStructuring() {
     return await this.resumeProcessingService.mainExecutionNormal(
       '/home/rushiil/Downloads/manufacturing-cvs',
+    );
+  }
+
+  @Post('update-custom-score')
+  async executreCustomScoreCumulative() {
+    return await updateCustomPromptCumulativeScore(
+      'ada8e9c2-f92e-41ae-94dd-c9afbe60226c',
     );
   }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable unused-imports/no-unused-vars */
 /* eslint-disable no-console */
 import { Injectable, Logger } from '@nestjs/common';
 
@@ -19,6 +20,7 @@ import {
   CandidateNode,
   ScoredDataType,
 } from 'src/modules/gpt-requests/types/gpt-requests.service-types';
+import { updateCustomPromptCumulativeScore } from 'src/modules/gpt-requests/utils/update-custom-prompt-cumulative-score.util';
 
 const path_ = path;
 
@@ -88,8 +90,16 @@ export class CVProcessingJobMQ
       }),
     );
     fs.unlinkSync(pdfPath);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const cumulativeScoreUpdate = await this.updateCustomPromptCumulativeScore(
+      arg.data.record.node.id,
+    );
 
     return;
+  }
+
+  async updateCustomPromptCumulativeScore(id: string) {
+    return await updateCustomPromptCumulativeScore(id);
   }
 
   getRequiredRecordData(record: CandidateNode): object {

@@ -166,22 +166,6 @@ export const SelectionMenu = ({
   selectedRecordIds,
   objectNameSingular = 'candidate',
 }: SelectionMenuProps) => {
-  /*const { findActiveObjectMetadataItemBySlug } =
-    useObjectMetadataItemForSettings();*/
-  // const activeObjectMetadataItem = findActiveObjectMetadataItemBySlug('people');
-
-  /*if (activeObjectMetadataItem) {
-    const disabledMetadataFields = getDisabledFieldMetadataItems(
-      activeObjectMetadataItem,
-    );
-  }*/
-
-  // const allFields = activeObjectMetadataItem?.fields;
-  // console.log(allFields)
-  // console.log(selectedRecords)
-
-  // const idToUpdate = allFields?.find((field: any) => field.name === 'gender');
-  // console.log(idToUpdate)
   const selectedIdsFilter = { id: { in: selectedRecordIds } };
   const { records: selectedRecords } = useFindManyRecords({
     objectNameSingular,
@@ -191,65 +175,13 @@ export const SelectionMenu = ({
   const { updateOneRecord } = useUpdateOneRecord({ objectNameSingular });
   const [customPromptInput, setCustomPromptInput] = useState('');
 
-  /*const sampleGenderBackendAPI = (name: ObjectRecord) => {
-    setTimeout(() => {
-      // Main functionality of the function
-      // console.log('1 second');
-    }, 10000);
-    return 'male';
-  };*/
-  // console.log(selectedRecords);
-  /*const sampleJobTitleBackendAPI = async (record: ObjectRecord) => {
-    await updateOneRecord({
-      idToUpdate: record.id,
-      updateOneRecordInput: {
-        jobTitle: '',
-      },
-    });
-  };*/
-
-  /*const updateGender = async (selectedRecords: ObjectRecord[]) => {
-    setIsRightDrawerOpen(true);
-    const startTime = performance.now();
-    for (const record of selectedRecords) {
-      updateOneRecord({
-        idToUpdate: record.id,
-        updateOneRecordInput: {
-          gender: sampleGenderBackendAPI(record),
-        },
-      });
-    }
-    // console.log(performance.now() - startTime);
-  };*/
-
   const [isRightDrawerOpen, setIsRightDrawerOpen] = useRecoilState(
     isProgressDrawerOpenState,
   );
 
-  // useEffect(() => {
-  //   const startTime = Date.now();
-
-  //   apiGenderEstimate(selectedRecords).then(() => {
-  //     const endTime = Date.now();
-  //     const totalTime = (endTime - startTime);
-  //     // setDuration(totalTime);
-  //     console.log(totalTime)
-  //   });
-  // }, []);
-
-  //  =============================================================================================
   const { closeSelectionMenu } = useSelectionMenu();
   const commandMenuRef = useRef<HTMLDivElement>(null);
-  // const openActivityRightDrawer = useOpenActivityRightDrawer();
   const isCommandMenuOpened = useRecoilValue(isSelectionMenuOpenedState);
-  // const [commandMenuSearch, setCommandMenuSearch] = useRecoilState(
-  //   commandMenuSearchState,
-  // );
-
-  /*const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCommandMenuSearch(event.target.value);
-  };*/
-
   const [selectedOptions, setSelectedOptions] =
     useRecoilState(SelectionListState);
 
@@ -261,12 +193,9 @@ export const SelectionMenu = ({
     },
   });
 
-  // console.log(selectedOptions)
-
   const updateRecordEnriched = async (
     enrichedData: { id: string; data: object }[],
   ) => {
-    // const startTime = performance.now();
     const currentFieldsMetadata = Object.keys(selectedRecords[0]);
     const enrichmentFields = Object.keys(enrichedData[0].data);
     for (const key of enrichmentFields) {
@@ -281,14 +210,12 @@ export const SelectionMenu = ({
         });
       }
     }
-    // console.log(enrichedData)
     for (const record of enrichedData) {
       updateOneRecord({
         idToUpdate: record.id,
         updateOneRecordInput: record.data,
       });
     }
-    // console.log(performance.now() - startTime);
   };
 
   const handleSelectionExecution = async () => {
@@ -298,7 +225,6 @@ export const SelectionMenu = ({
       if (selectedOptions.includes(option.name)) {
         selectedOptionIds.push(option.id);
       }
-      // console.log(selectedOptionIds)
     });
     const endpointURL = `${REACT_APP_SERVER_BASE_URL}/gpt-api/enrichment`;
     const selectedRecordsDataToBeSent = selectedRecords.map(
@@ -316,7 +242,6 @@ export const SelectionMenu = ({
         };
       },
     );
-    // console.log(selectedRecordsDataToBeSent);
     const requestBody = {
       rawData: selectedRecordsDataToBeSent,
       options: selectedOptionIds,
@@ -325,19 +250,15 @@ export const SelectionMenu = ({
       endpointURL,
       requestBody,
     );
-    // console.log(response);
     if (response) {
       await updateRecordEnriched(response.data);
     }
-    // console.log(customPromptInput);
-    // console.log("YES I HEAR YOU!");
   };
 
   const handleCustomPromptInputChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setCustomPromptInput(event.target.value);
-    // console.log(customPromptInput);
   };
 
   const handleCustomPromptExecution = async () => {
@@ -360,11 +281,7 @@ export const SelectionMenu = ({
     });
     // console.log(requestBody);
   };
-  /*const handleCVProcessRecords = async () => {
-    setIsRightDrawerOpen(true);
-  };*/
 
-  // console.log(selectedRecords);
   return (
     <>
       {isCommandMenuOpened && (
