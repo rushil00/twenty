@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+import { TWENTY_API_KEY } from '@/selection-menu-new/hooks/keys';
 import { REACT_APP_SERVER_BASE_URL } from '~/config';
 
 export const FIND_MANY_CANDIDATES = `query FindManyCandidates($filter: CandidateFilterInput, $orderBy: CandidateOrderByInput, $lastCursor: String, $limit: Int) {
@@ -56,6 +57,7 @@ export const FIND_MANY_CANDIDATES = `query FindManyCandidates($filter: Candidate
 
 export const findManyCandidates = async (recordID: string[]) => {
   const url = `${REACT_APP_SERVER_BASE_URL}/graphql`;
+  // console.log(TWENTY_API_KEY);
   const response = await axios.post(
     url,
     {
@@ -70,10 +72,11 @@ export const findManyCandidates = async (recordID: string[]) => {
     },
     {
       headers: {
-        Authorization: `Bearer ${process.env.TWENTY_API_KEY}`,
+        Authorization: `Bearer ${TWENTY_API_KEY}`,
       },
     },
   );
-  // console.log(response.data);
+  // eslint-disable-next-line no-console
+  console.log(response.data);
   return response.data.data.candidates.edges;
 };

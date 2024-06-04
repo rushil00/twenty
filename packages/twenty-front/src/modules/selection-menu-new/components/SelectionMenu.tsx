@@ -172,6 +172,7 @@ export const SelectionMenu = ({
     filter: selectedIdsFilter,
     skip: !selectedRecordIds.length,
   });
+  // console.log(selectedRecords);
   const { updateOneRecord } = useUpdateOneRecord({ objectNameSingular });
   const [customPromptInput, setCustomPromptInput] = useState('');
 
@@ -267,6 +268,7 @@ export const SelectionMenu = ({
     const selectedRecords_ = await findManyCandidates(
       selectedRecords.map((record) => record.id),
     );
+    // console.log(selectedRecords_);
     const requestBody = {
       data: {
         customPrompt: customPrompt,
